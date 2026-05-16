@@ -37,6 +37,7 @@ app = Client(
     bot_token=BOT_TOKEN,
     workers=24,
     max_concurrent_transmissions=10,
+    plugins=dict(root="plugins"),
 )
 
 async def load_plugins():
@@ -44,7 +45,7 @@ async def load_plugins():
     try:
         # Import all plugins to register handlers
         from plugins import start, help_menu, admin, moderation, filters, notes, hashtags
-        from plugins import security, welcome, reports, settings
+        from plugins import security, welcome, reports, settings, badwords
         
         logger.info("✅ All plugins loaded successfully")
         return True
@@ -61,13 +62,15 @@ async def on_startup():
     try:
         # Initialize database
         logger.info("🔄 Connecting to MongoDB...")
-        db = Database()
-        success = await db.connect()
-        if not success:
-            logger.error("❌ Database connection failed")
-            return False
-        
-        logger.info("✅ Database connected")
+        try:
+            db = Database()
+            success = await db.connect()
+            if not success:
+                logger.error("❌ Database connection failed, continuing anyway")
+            else:
+                logger.info("✅ Database connected")
+        except Exception as e:
+            logger.error(f"❌ Database connection error: {e}")
         
         # Load plugins
         plugins_ok = await load_plugins()
@@ -112,7 +115,9 @@ async def main():
 
     try:
         logger.info("🎯 Bot is running...")
+        await app.start()
         await idle()
+        await app.stop()
     except KeyboardInterrupt:
         logger.info("⏹️ Bot stopped by user")
     except Exception as e:
