@@ -8,6 +8,8 @@ load_dotenv()
 
 # Bot Configuration
 BOT_TOKEN = os.getenv("BOT_TOKEN")
+API_ID = int(os.getenv("API_ID", "0")) if os.getenv("API_ID") else None
+API_HASH = os.getenv("API_HASH")
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
 SUDO_USERS = list(map(int, os.getenv("SUDO_USERS", "").split())) if os.getenv("SUDO_USERS") else []
 LOG_GROUP = int(os.getenv("LOG_GROUP", -1001234567890))
