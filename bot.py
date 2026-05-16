@@ -10,6 +10,7 @@ from pathlib import Path
 
 from pyrogram import Client, idle
 from pyrogram.errors import RPCError
+from aiohttp import web
 
 # Setup logging
 logging.basicConfig(
@@ -90,6 +91,9 @@ async def on_shutdown():
     except Exception as e:
         logger.error(f"Error during shutdown: {e}")
 
+async def health_check(request):
+    return web.Response(text="OK")
+
 async def main():
     """Main bot function"""
     startup_ok = await on_startup()
@@ -97,6 +101,15 @@ async def main():
         logger.error("Startup failed, exiting")
         return
     
+    # Start health check server
+    app_web = web.Application()
+    app_web.router.add_get('/', health_check)
+    runner = web.AppRunner(app_web)
+    await runner.setup()
+    site = web.TCPSite(runner, '0.0.0.0', 8000)
+    await site.start()
+    logger.info("✅ Health check server started on port 8000")
+
     try:
         logger.info("🎯 Bot is running...")
         await idle()
