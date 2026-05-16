@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: moderationbot_mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - modbot_network
+
+  bot:
+    build: .
+    container_name: moderationbot
+    environment:
+      BOT_TOKEN: ${BOT_TOKEN}
+      API_ID: ${API_ID}
+      API_HASH: ${API_HASH}
+      MONGO_URI: mongodb://admin:password@mongo:27017
+      LOG_GROUP: ${LOG_GROUP}
+      SUDO_USERS: ${SUDO_USERS}
+    depends_on:
+      - mongo
+    networks:
+      - modbot_network
+
+volumes:
+  mongo_data:
+
+networks:
+  modbot_network:
+    driver: bridge
