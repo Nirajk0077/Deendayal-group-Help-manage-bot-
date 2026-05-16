@@ -7,8 +7,8 @@ from pyrogram import Client, filters
 from pyrogram.types import Message
 from pyrogram.errors import FloodWait
 from database import Database
-from utils_permissions import check_admin_permission
-from utils_helpers import LinkDetector, BadWordFilter
+from utils.permissions import check_admin_permission
+from utils.helpers import LinkDetector, BadWordFilter
 from config import FLOODWAIT
 
 logger = logging.getLogger(__name__)

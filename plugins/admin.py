@@ -7,7 +7,7 @@ from pyrogram import Client, filters
 from pyrogram.types import Message, ChatPermissions
 from pyrogram.errors import FloodWait
 from database import Database
-from utils_permissions import check_admin_permission, PermissionChecker, ChatChecker
+from utils.permissions import check_admin_permission, PermissionChecker, ChatChecker
 from config import FLOODWAIT, MESSAGES
 
 logger = logging.getLogger(__name__)

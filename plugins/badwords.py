@@ -5,7 +5,7 @@ import logging
 from pyrogram import Client, filters
 from pyrogram.types import Message
 from database import Database
-from utils_permissions import check_admin_permission
+from utils.permissions import check_admin_permission
 
 logger = logging.getLogger(__name__)
 db = Database()
