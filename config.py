@@ -6,8 +6,20 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Bot Configuration
-BOT_TOKEN = os.getenv("BOT_TOKEN")
+# Telegram API Configuration - REQUIRED
+API_ID = int(os.getenv("API_ID", "0"))
+API_HASH = os.getenv("API_HASH", "")
+BOT_TOKEN = os.getenv("BOT_TOKEN", "")
+
+# Validate credentials
+if not API_ID or API_ID == 0:
+    raise ValueError("❌ API_ID is required in .env file")
+if not API_HASH:
+    raise ValueError("❌ API_HASH is required in .env file")
+if not BOT_TOKEN:
+    raise ValueError("❌ BOT_TOKEN is required in .env file")
+
+# Database Configuration
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
 SUDO_USERS = list(map(int, os.getenv("SUDO_USERS", "").split())) if os.getenv("SUDO_USERS") else []
 LOG_GROUP = int(os.getenv("LOG_GROUP", -1001234567890))
