@@ -6,6 +6,7 @@ import logging
 import asyncio
 import sys
 import os
+from aiohttp import web
 
 # Setup logging
 logging.basicConfig(
@@ -258,6 +259,23 @@ Coming soon!
         logger.error(f"Error: {e}")
 
 # ============================================
+# WEBSERVER
+# ============================================
+
+async def health_check(request):
+    return web.Response(text="OK", status=200)
+
+async def start_webserver():
+    app = web.Application()
+    app.router.add_get('/', health_check)
+    app.router.add_get('/health', health_check)
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, '0.0.0.0', 8000)
+    await site.start()
+    logger.info("✅ Health check webserver running on port 8000")
+
+# ============================================
 # MAIN
 # ============================================
 
@@ -266,6 +284,9 @@ async def main():
     logger.info("🚀 Starting Telegram Moderation Bot")
     logger.info("="*60)
     
+    # Start the webserver for health checks
+    await start_webserver()
+
     try:
         async with app:
             logger.info("✅ Bot connected!")
